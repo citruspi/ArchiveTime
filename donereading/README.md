@@ -93,11 +93,16 @@ _Sample Output_
 
 ### Export
 
+Export all records:
+
     $ python <service>.py export
+    
+Only export records which have not been previously exported:
+
+    $ python <service>.py export --new
 
 This will write a list of usernames or URLS to a `.txt` file. It can be uploaded [here](http://allyourfeed.ludios.org:8080/index.html).
 
-_To be implemented..._
 
 ### Statistics
 
