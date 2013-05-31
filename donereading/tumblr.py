@@ -2,11 +2,6 @@
 #
 # -*- coding: utf-8 -*-
 
-__title__ = 'donereading.tumblr'
-__version__ = '0.0.2'
-__author__ = 'Mihir Singh (citruspi)'
-__license__ = 'MIT'
-__copyright__ = 'Copyright 2013 Mihir Singh <me@mihirsingh.com>'
 
 """Tumblr Indexing Bot
 
@@ -14,8 +9,16 @@ Usage:
   tumblr.py archive [--verbose]
   tumblr.py export [--new]
   tumblr.py statistics
-  
+
 """
+
+
+__title__ = 'donereading.tumblr'
+__version__ = '0.0.2'
+__author__ = 'Mihir Singh (citruspi)'
+__license__ = 'MIT'
+__copyright__ = 'Copyright 2013 Mihir Singh <me@mihirsingh.com>'
+
 
 import beanstalkc
 import config
