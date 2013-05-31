@@ -2,10 +2,17 @@
 #
 # -*- coding: utf-8 -*-
 
-"""Tumblr Index Bot
+__title__ = 'donereading.tumblr'
+__version__ = '0.0.2'
+__author__ = 'Mihir Singh (citruspi)'
+__license__ = 'MIT'
+__copyright__ = 'Copyright 2013 Mihir Singh <me@mihirsingh.com>'
+
+"""Tumblr Indexing Bot
 
 Usage:
   tumblr.py archive [--verbose]
+  tumblr.py export [--new]
   tumblr.py statistics
   
 """
@@ -17,6 +24,7 @@ from peewee import *
 import re
 import requests
 from termcolor import cprint
+import time
 
 
 class Tumblr(Model):
@@ -24,6 +32,7 @@ class Tumblr(Model):
     url = CharField()
     parsed = BooleanField()
     queued = BooleanField()
+    exported = BooleanField()
 
     class Meta:
 
@@ -118,8 +127,41 @@ class ArchiveTime(object):
 
             if self.verbose: cprint('[ERROR] ' + url, 'red')
             return False
+            
+    
+    def export(self, new=False):
+                
+        if new:
+            
+            count = Tumblr.select().where(Tumblr.exported == False).count()
+            start = time.time()
+            
+            with open("%s" % (datetime.datetime.now().strftime('Tumblr %Y-%m-%d %H:%M:%S')), "a+") as f:
+            
+                for row in Tumblr.select().where(Tumblr.exported == False):
+                    
+                    f.write(row.url)
+                    row.exported = True
+                    row.save()
+                    
+            cprint('Exported %s records in %s seconds.\n' % (count, start-time.time()), 'green') 
+            
+        else:
+            
+            count = Tumblr.select().count()
+            start = time.time()
+                 
+            with open("%s" % (datetime.datetime.now().strftime('Tumblr %Y-%m-%d %H:%M:%S')), "a+") as f:
+                
+                for row in Tumblr.select():
 
-
+                    f.write(row.url)
+                    row.exported = True
+                    row.save()
+                    
+            cprint('Exported %s records in %s seconds.\n' % (count, start-time.time()), 'green')
+                        
+                
     def statistics(self):
         
         print '%s Queued Jobs' % (str(beanstalk.stats_tube(config.tumblr['beanstalkd']['tube'])['current-jobs-ready']))
@@ -139,3 +181,8 @@ if __name__ == '__main__':
         
         jake = ArchiveTime(verbose=True)
         jake.statistics()
+        
+    elif args['export']:
+        
+        jake = ArchiveTime(verbose=True)
+        jake.export(new=args['--new'])
